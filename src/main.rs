@@ -2,37 +2,20 @@
 #![forbid(unsafe_code)]
 
 // Imports
-
-// Import extern crates
+pub mod appconfig;
+pub mod v1;
 use rocket::{
     fs::{relative, FileServer},
     routes,
 };
-
-// Import app config
-pub mod appconfig;
-
-// Import API version 1
-pub mod v1 {
-    // Import structures
-    pub mod structures {
-        pub mod client;
-        pub mod user;
-    }
-    // Import routes
-    pub mod routes {
-        pub mod auth;
-        pub mod ping;
-    }
-}
+use v1::routes::{auth::login, ping::pong};
 
 // Main function
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
     let _rocket = rocket::build()
         .mount("/", FileServer::from(relative!("ui/"))) // <-- Hosts the frontend if I not gonna use any kind of frontend framework
-        .mount("/api/v1", routes![v1::routes::ping::pong]) // <-- Test route
-        .mount("/api/v1", routes![v1::routes::auth::login]) // <-- Login route
+        .mount("/api/v1", routes![pong, login])
         .launch()
         .await?;
 

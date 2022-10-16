@@ -2,8 +2,8 @@
 use json::object;
 use rocket::{http::Status, post, response::content::RawJson};
 
-#[post("/login?<username>&<public_key>")]
-pub fn login(username: &str, public_key: &str) -> RawJson<String> {
+#[post("/login?<username>")]
+pub fn login(username: &str) -> RawJson<String> {
     let bad = Status::BadRequest;
     let ok = Status::Ok;
 
@@ -33,17 +33,6 @@ pub fn login(username: &str, public_key: &str) -> RawJson<String> {
             object! {
                 "code": bad.code,
                 "message": "Username is too long"
-            }
-            .dump(),
-        );
-    }
-
-    // public_key is empty
-    if public_key.is_empty() {
-        return RawJson(
-            object! {
-                "code": bad.code,
-                "message": "public_key is empty"
             }
             .dump(),
         );

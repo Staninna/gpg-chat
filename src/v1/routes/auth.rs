@@ -7,7 +7,6 @@ use rocket::{http::Status, post, response::content::RawJson};
 pub fn login(username: &str) -> RawJson<String> {
     let bad = Status::BadRequest;
     let ok = Status::Ok;
-    let min_len_username = MIN_LEN_USERNAME - 1;
 
     match username.len() {
         // username is empty
@@ -19,7 +18,7 @@ pub fn login(username: &str) -> RawJson<String> {
             .dump(),
         ),
         // username is too short
-        0..=min_len_username => RawJson(
+        0..=MIN_LEN_USERNAME => RawJson(
             object! {
                 "code": ok.code,
                 "message": format!("Username of {} is too short", username.len())

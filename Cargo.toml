@@ -6,6 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rocket = { git = "https://github.com/SergioBenitez/Rocket", rev = "6778089c129ee15dfd524413f067c9c572226159" }
+rocket = { version = "0.5.0-rc.2" }
 json = "0.12.4"
-deadpool-sqlite = "0.5.0"

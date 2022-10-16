@@ -2,11 +2,17 @@
 #![forbid(unsafe_code)]
 
 // Imports
+
+// Import extern crates
 use rocket::{
     fs::{relative, FileServer},
     routes,
 };
 
+// Import app config
+pub mod appconfig;
+
+// Import API version 1
 pub mod v1 {
     // Import structures
     pub mod structures {

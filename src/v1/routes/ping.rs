@@ -1,6 +1,4 @@
-use rocket::get;
-
-#[get("/ping")]
-pub fn pingpong() -> &'static str {
+#[rocket::get("/ping")]
+pub fn pong() -> &'static str {
     "pong"
 }

@@ -14,7 +14,7 @@ use v1::routes::{auth::login, ping::pong};
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
     let _rocket = rocket::build()
-        .mount("/", FileServer::from(relative!("ui/"))) // <-- Hosts the frontend if I not gonna use any kind of frontend framework
+        .mount("/", FileServer::from(relative!("ui/")))
         .mount("/api/v1", routes![pong, login])
         .launch()
         .await?;

@@ -4,8 +4,8 @@ use json::object;
 use regex::Regex;
 use rocket::{http::Status, post, response::content::RawJson, State};
 
-#[post("/login?<username>")]
-pub fn login(appconfig: &State<Ini>, username: &str) -> RawJson<String> {
+#[post("/register?<username>")]
+pub fn register(appconfig: &State<Ini>, username: &str) -> RawJson<String> {
     // Default status responses
     let bad = Status::BadRequest;
     let ok = Status::Ok;
@@ -58,7 +58,16 @@ pub fn login(appconfig: &State<Ini>, username: &str) -> RawJson<String> {
             .dump(),
         );
     }
-
+    // Username can not be Staninna because he is a bad person
+    else if username.to_lowercase() == "staninna" {
+        return RawJson(
+            object! {
+                "code": bad.code,
+                "message": "Username can not be Staninna because he is a bad person"
+            }
+            .dump(),
+        );
+    }
     // Username is valid
     RawJson(
         object! {

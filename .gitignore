@@ -1,6 +1,7 @@
 # Directories
 /target
 /.vscode
+/.config
 
 # Files
 /flow.png

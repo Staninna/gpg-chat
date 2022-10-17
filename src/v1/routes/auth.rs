@@ -6,8 +6,11 @@ use rocket::{http::Status, post, response::content::RawJson, State};
 
 #[post("/login?<username>")]
 pub fn login(appconfig: &State<Ini>, username: &str) -> RawJson<String> {
+    // Default status responses
     let bad = Status::BadRequest;
     let ok = Status::Ok;
+
+    // Load variables from appconfig
     let min_username_length: usize =
         appconfig.getint("username", "min_length").unwrap().unwrap() as usize;
     let max_username_length: usize =
@@ -55,14 +58,13 @@ pub fn login(appconfig: &State<Ini>, username: &str) -> RawJson<String> {
             .dump(),
         );
     }
+
     // Username is valid
-    else {
-        return RawJson(
-            object! {
-                "code": ok.code,
-                "message": "Username is valid"
-            }
-            .dump(),
-        );
-    }
+    RawJson(
+        object! {
+            "code": ok.code,
+            "message": "Username is valid"
+        }
+        .dump(),
+    )
 }

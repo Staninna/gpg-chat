@@ -2,13 +2,12 @@
 #![forbid(unsafe_code)]
 
 // Imports
-pub mod appconfig;
-pub mod v1;
+mod v1;
+use crate::v1::routes::{auth::login, ping::pong};
 use rocket::{
     fs::{relative, FileServer},
     routes,
 };
-use v1::routes::{auth::login, ping::pong};
 
 // Main function
 #[rocket::main]
@@ -21,3 +20,5 @@ async fn main() -> Result<(), rocket::Error> {
 
     Ok(())
 }
+
+// In a real application, this would likely be more complex.

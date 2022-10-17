@@ -1,13 +1,18 @@
 // Imports
+use configparser::ini::Ini;
 use json::object;
-use rocket::{http::Status, post, response::content::RawJson};
+use regex::Regex;
+use rocket::{http::Status, post, response::content::RawJson, State};
 
 #[post("/login?<username>")]
-pub fn login(username: &str) -> RawJson<String> {
+pub fn login(appconfig: &State<Ini>, username: &str) -> RawJson<String> {
     let bad = Status::BadRequest;
     let ok = Status::Ok;
-    let min_username = 5;
-    let max_username = 15;
+    let min_username_length: usize =
+        appconfig.getint("username", "min_length").unwrap().unwrap() as usize;
+    let max_username_length: usize =
+        appconfig.getint("username", "max_length").unwrap().unwrap() as usize;
+    let username_regex = Regex::new(appconfig.get("username", "regex").unwrap().as_str()).unwrap();
 
     // username is empty
     if username.is_empty() {
@@ -20,32 +25,44 @@ pub fn login(username: &str) -> RawJson<String> {
         );
     }
     // username is too short
-    else if username.len() <= min_username {
+    else if username.len() <= min_username_length {
         return RawJson(
             object! {
                 "code": ok.code,
-                "message": format!("Username of {} is too short", username.len())
+                "message": "Username is too short"
             }
             .dump(),
         );
     }
     // username is too long
-    else if username.len() >= max_username {
+    else if username.len() >= max_username_length {
         return RawJson(
             object! {
                 "code": ok.code,
-                "message": format!("Username of {} is too long", username.len())
+                "message": "Username is too long"
             }
             .dump(),
         );
     }
-
-    // username is valid
-    RawJson(
-        object! {
-            "code": ok.code,
-            "message": "Successfully logged in with username"
-        }
-        .dump(),
-    )
+    // Username doesn't match regex
+    else if !username_regex.is_match(username) {
+        return RawJson(
+            object! {
+                "code": bad.code,
+                "message": format!("Username doesn't match regex"),
+                "regex": username_regex.as_str()
+            }
+            .dump(),
+        );
+    }
+    // Username is valid
+    else {
+        return RawJson(
+            object! {
+                "code": ok.code,
+                "message": "Username is valid"
+            }
+            .dump(),
+        );
+    }
 }

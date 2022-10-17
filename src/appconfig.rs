@@ -17,6 +17,8 @@ fn default_appconfig() -> Ini {
     // Create a new ini file
     let mut appconfig = Ini::new();
 
+    // Hard code the default values
+
     // Username section
     appconfig.set("username", "min_length", Some(String::from("3")));
     appconfig.set("username", "max_length", Some(String::from("20")));
@@ -48,6 +50,8 @@ fn check_appconfig() -> Ini {
             exit(1)
         }
     }
+
+    // Has to match with the hardcoded default values in default_appconfig()
 
     // Check/fix username section
     check_fix(&mut appconfig, "username", "min_length", "3", &mut fixed);

@@ -22,7 +22,7 @@ fn default_appconfig() -> Ini {
     // Username section
     appconfig.set("username", "min_length", Some(String::from("3")));
     appconfig.set("username", "max_length", Some(String::from("20")));
-    appconfig.set("username", "regex", Some(String::from(r"^[a-zA-Z0-9_-]+$")));
+    appconfig.set("username", "regex", Some(String::from("^[a-zA-Z0-9_-]+$")));
 
     // Write the ini file
     match appconfig.write(".config/appconfig.ini") {
@@ -60,7 +60,7 @@ fn check_appconfig() -> Ini {
         &mut appconfig,
         "username",
         "regex",
-        r"^[a-zA-Z0-9_-]+$",
+        "^[a-zA-Z0-9_-]+$",
         &mut fixed,
     );
 

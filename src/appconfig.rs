@@ -8,7 +8,7 @@ fn default_appconfig() -> Ini {
         match create_dir(".config") {
             Ok(_) => (),
             Err(e) => {
-                eprintln!("Error: {}", e);
+                eprintln!("Couldn't make new directory, Error: {}", e);
                 exit(1);
             }
         }
@@ -28,7 +28,7 @@ fn default_appconfig() -> Ini {
     match appconfig.write(".config/appconfig.ini") {
         Ok(_) => println!("Appconfig created"),
         Err(e) => {
-            println!("Error: {}", e);
+            eprintln!("Couldn't write new appconfig.ini, Error: {}", e);
             exit(1)
         }
     }
@@ -46,7 +46,7 @@ fn check_appconfig() -> Ini {
     match appconfig.load(".config/appconfig.ini") {
         Ok(_) => (),
         Err(e) => {
-            println!("Error: {}", e);
+            eprintln!("Couldn't read appconfig.ini, Error: {}", e);
             exit(1)
         }
     }
@@ -69,7 +69,7 @@ fn check_appconfig() -> Ini {
         match appconfig.write(".config/appconfig.ini") {
             Ok(_) => println!("Appconfig fixed"),
             Err(e) => {
-                println!("Error: {}", e);
+                eprintln!("Couldn't overwrite appconfig.ini, Error: {}", e);
                 exit(1)
             }
         }

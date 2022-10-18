@@ -10,9 +10,9 @@ Note that I included sqlite3.lib in this repo so you don't have to compile it yo
 
 How to build sqlite3.lib file on Windows 10
 
-1. Download the code source from https://www.sqlite.org/download.html
+1. Download the code source from <https://www.sqlite.org/download.html>
 
-2. Also download the binary from https://www.sqlite.org/download.html
+2. Also download the binary from <https://www.sqlite.org/download.html>
 
 3. Extract both archives to the same directory
 

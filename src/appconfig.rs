@@ -24,6 +24,9 @@ fn default_appconfig() -> Ini {
     appconfig.set("username", "max_length", Some(String::from("20")));
     appconfig.set("username", "regex", Some(String::from("^[a-zA-Z0-9_-]+$")));
 
+    // Database section
+    appconfig.set("database", "path", Some(String::from("database.db")));
+
     // Write the ini file
     match appconfig.write(".config/appconfig.ini") {
         Ok(_) => println!("Appconfig created"),
@@ -64,6 +67,15 @@ fn check_appconfig() -> Ini {
         &mut fixed,
     );
 
+    // Check/fix database section
+    check_fix(
+        &mut appconfig,
+        "database",
+        "path",
+        "database.db",
+        &mut fixed,
+    );
+
     // Write the ini file
     if fixed {
         match appconfig.write(".config/appconfig.ini") {
@@ -82,7 +94,9 @@ fn check_appconfig() -> Ini {
 fn check_fix(appconfig: &mut Ini, section: &str, key: &str, value: &str, fixed: &mut bool) {
     if appconfig.get(section, key).is_none() {
         appconfig.set(section, key, Some(String::from(value)));
-        *fixed = true;
+        if !*fixed {
+            *fixed = true;
+        }
     }
 }
 

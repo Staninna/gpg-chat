@@ -16,15 +16,19 @@ use rocket::{
 // Main function
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
+    // Load appconfig.ini
     let appconfig = appconfig::appconfig();
 
-    let connection = database::connect(&appconfig).await;
+    // Connect/set up database
+    let conn = database::connect(&appconfig).await;
+    database::setup(&conn).await;
 
+    // Start rocket
     let _rocket = rocket::build()
         .mount("/", FileServer::from(relative!("ui/")))
         .mount("/api/v1", routes![pong, register])
         .manage(appconfig)
-        .manage(connection)
+        .manage(conn)
         .launch()
         .await?;
 

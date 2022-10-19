@@ -465,6 +465,7 @@ dependencies = [
  "json",
  "regex",
  "rocket",
+ "rusqlite",
  "tokio-rusqlite",
 ]
 

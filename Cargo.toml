@@ -10,4 +10,5 @@ rocket = { version = "0.5.0-rc.2" }
 json = "0.12.4"
 configparser = "3.0.2"
 regex = "1.6.0"
+rusqlite = "0.28"
 tokio-rusqlite = "0.3"

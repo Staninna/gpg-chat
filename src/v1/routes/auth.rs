@@ -1,11 +1,17 @@
 // Imports
+use crate::v1::structures::user::User;
 use configparser::ini::Ini;
 use json::object;
 use regex::Regex;
 use rocket::{http::Status, post, response::content::RawJson, State};
+use tokio_rusqlite::Connection;
 
 #[post("/register?<username>")]
-pub fn register(appconfig: &State<Ini>, username: &str) -> RawJson<String> {
+pub async fn register(
+    appconfig: &State<Ini>,
+    conn: &State<Connection>,
+    username: &str,
+) -> RawJson<String> {
     // Default status responses
     let bad = Status::BadRequest;
     let ok = Status::Ok;
@@ -68,6 +74,25 @@ pub fn register(appconfig: &State<Ini>, username: &str) -> RawJson<String> {
             .dump(),
         );
     }
+
+    // Doesn't compile yet but work in progress
+    // println!("Username: {}", username);
+    // let _ = conn
+    //     .call(|conn| {
+    //         let mut stmt = conn.prepare("SELECT username FROM users").unwrap();
+    //         let users = stmt
+    //             .query_row([], |row| {
+    //                 Ok(User {
+    //                     id: row.get(0)?,
+    //                     username: row.get(1)?,
+    //                     public_key: row.get(2)?,
+    //                     created_at: row.get(3)?
+    //             })
+    //             .unwrap();
+    //         println!("{:?}", users);
+    //     })
+    //     .await;
+
     // Username is valid
     RawJson(
         object! {

@@ -26,6 +26,7 @@ fn default_appconfig() -> Ini {
 
     // Database section
     appconfig.set("database", "path", Some(String::from("database.db")));
+    appconfig.set("database", "file", Some(String::from("true")));
 
     // Write the ini file
     match appconfig.write(".config/appconfig.ini") {
@@ -75,6 +76,7 @@ fn check_appconfig() -> Ini {
         "database.db",
         &mut fixed,
     );
+    check_fix(&mut appconfig, "database", "file", "true", &mut fixed);
 
     // Write the ini file
     if fixed {

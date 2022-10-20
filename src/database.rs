@@ -84,6 +84,30 @@ pub async fn setup(conn: &Connection) {
             }
         }
 
+        // Add admin user
+        match conn.execute(
+            "INSERT OR IGNORE INTO users (username, public_key) VALUES (?1, ?2)",
+            params!["admin", "admin"],
+        ) {
+            Ok(_) => {}
+            Err(e) => {
+                eprintln!("Couldn't add admin user, Error: {}", e);
+                exit(1);
+            }
+        }
+
+        // Add default user
+        match conn.execute(
+            "INSERT OR IGNORE INTO users (username, public_key) VALUES (?1, ?2)",
+            params!["default", "default"],
+        ) {
+            Ok(_) => {}
+            Err(e) => {
+                eprintln!("Couldn't add default user, Error: {}", e);
+                exit(1);
+            }
+        }
+
         // Create table messages if not exists
         match conn.execute(
             "CREATE TABLE IF NOT EXISTS messages (

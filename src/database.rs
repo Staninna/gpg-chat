@@ -1,6 +1,5 @@
 // Imports
 use configparser::ini::Ini;
-use rusqlite::params;
 use std::process::exit;
 use tokio_rusqlite::Connection;
 
@@ -41,7 +40,7 @@ pub async fn connect(appconfig: &Ini) -> Connection {
 
     // return error or database
     match conn {
-        Ok(conn) => conn,
+        Ok(conn) => return conn,
         Err(e) => {
             eprintln!("Couldn't connect to database, Error: {}", e);
             exit(1);
@@ -55,7 +54,7 @@ pub async fn setup(conn: &Connection) {
     conn.call(|conn| {
         match conn.execute(
             "CREATE TABLE IF NOT EXISTS users (
-                    id integer AUTO_INCREMENT,
+                    id integer NOT NULL,
                     username text NOT NULL UNIQUE,
                     public_key text NOT NULL UNIQUE,
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -68,42 +67,6 @@ pub async fn setup(conn: &Connection) {
             Ok(_) => {}
             Err(e) => {
                 eprintln!("Couldn't create table users, Error: {}", e);
-                exit(1);
-            }
-        }
-
-        // Add test user
-        match conn.execute(
-            "INSERT OR IGNORE INTO users (username, public_key) VALUES (?1, ?2)",
-            params!["test", "test"],
-        ) {
-            Ok(_) => {}
-            Err(e) => {
-                eprintln!("Couldn't add test user, Error: {}", e);
-                exit(1);
-            }
-        }
-
-        // Add admin user
-        match conn.execute(
-            "INSERT OR IGNORE INTO users (username, public_key) VALUES (?1, ?2)",
-            params!["admin", "admin"],
-        ) {
-            Ok(_) => {}
-            Err(e) => {
-                eprintln!("Couldn't add admin user, Error: {}", e);
-                exit(1);
-            }
-        }
-
-        // Add default user
-        match conn.execute(
-            "INSERT OR IGNORE INTO users (username, public_key) VALUES (?1, ?2)",
-            params!["default", "default"],
-        ) {
-            Ok(_) => {}
-            Err(e) => {
-                eprintln!("Couldn't add default user, Error: {}", e);
                 exit(1);
             }
         }

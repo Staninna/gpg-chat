@@ -52,16 +52,6 @@ pub async fn register(
             .dump(),
         );
     }
-    // Username can not be Staninna because he is a bad person
-    else if username.to_lowercase() == "staninna" {
-        return RawJson(
-            object! {
-                "code": bad.code,
-                "message": "Username can not be Staninna because he is a bad person"
-            }
-            .dump(),
-        );
-    }
 
     // Username is valid
     RawJson(

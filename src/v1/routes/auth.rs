@@ -1,5 +1,4 @@
 // Imports
-use crate::v1::structures::user::User;
 use configparser::ini::Ini;
 use json::object;
 use regex::Regex;

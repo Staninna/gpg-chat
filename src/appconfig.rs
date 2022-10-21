@@ -20,9 +20,17 @@ fn default_appconfig() -> Ini {
     // Hard code the default values
 
     // Username section
-    appconfig.set("username", "min_length", Some(String::from("3")));
-    appconfig.set("username", "max_length", Some(String::from("20")));
-    appconfig.set("username", "regex", Some(String::from("^[a-zA-Z0-9_-]+$")));
+    appconfig.set(
+        "username",
+        "regex",
+        Some(String::from("^[a-zA-Z0-9_-]{5,10}$")),
+    );
+    appconfig.set(
+        "username", 
+        "comment", 
+        Some(
+            String::from("The username has te be between 5 and 10 characters long and can only contain letters, numbers, underscores and dashes"))
+    );
 
     // Database section
     appconfig.set("database", "path", Some(String::from("database.db")));
@@ -58,13 +66,18 @@ fn check_appconfig() -> Ini {
     // Has to match with the hardcoded default values in default_appconfig()
 
     // Check/fix username section
-    check_fix(&mut appconfig, "username", "min_length", "3", &mut fixed);
-    check_fix(&mut appconfig, "username", "max_length", "20", &mut fixed);
     check_fix(
         &mut appconfig,
         "username",
         "regex",
-        "^[a-zA-Z0-9_-]+$",
+        "^[a-zA-Z0-9_-]{5,10}$",
+        &mut fixed,
+    );
+    check_fix(
+        &mut appconfig,
+        "username",
+        "comment",
+        "The username has te be between 5 and 10 characters long and can only contain letters, numbers, underscores and dashes",
         &mut fixed,
     );
 

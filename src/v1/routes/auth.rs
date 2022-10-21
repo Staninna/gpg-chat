@@ -16,49 +16,38 @@ pub async fn register(
     let ok = Status::Ok;
 
     // Load variables from appconfig
-    let min_username_length: usize =
-        appconfig.getint("username", "min_length").unwrap().unwrap() as usize;
-    let max_username_length: usize =
-        appconfig.getint("username", "max_length").unwrap().unwrap() as usize;
     let username_regex = Regex::new(appconfig.get("username", "regex").unwrap().as_str()).unwrap();
+    let regex_comment = appconfig.get("username", "comment").unwrap().to_string();
 
-    // username is empty
-    if username.is_empty() {
-        return RawJson(
-            object! {
-                "code": bad.code,
-                "message": "Username can not be empty"
-            }
-            .dump(),
-        );
-    }
-    // username is too short
-    else if username.len() <= min_username_length {
-        return RawJson(
-            object! {
-                "code": ok.code,
-                "message": "Username is too short"
-            }
-            .dump(),
-        );
-    }
-    // username is too long
-    else if username.len() >= max_username_length {
-        return RawJson(
-            object! {
-                "code": ok.code,
-                "message": "Username is too long"
-            }
-            .dump(),
-        );
-    }
+    // Get all usernames from database
+    let usernames = conn
+        .call(|conn| {
+            let mut stmt = conn.prepare("SELECT username FROM users").unwrap();
+            stmt.query_map([], |row| row.get(0))
+                .unwrap()
+                .map(|r| r.unwrap())
+                .collect::<Vec<String>>()
+        })
+        .await;
+
     // Username doesn't match regex
-    else if !username_regex.is_match(username) {
+    if !username_regex.is_match(username) {
         return RawJson(
             object! {
                 "code": bad.code,
                 "message": format!("Username doesn't match regex"),
+                "comment": regex_comment,
                 "regex": username_regex.as_str()
+            }
+            .dump(),
+        );
+    }
+    // Username is already taken
+    else if usernames.contains(&username.to_string()) {
+        return RawJson(
+            object! {
+                "code": bad.code,
+                "message": "Username is already taken"
             }
             .dump(),
         );
@@ -73,24 +62,6 @@ pub async fn register(
             .dump(),
         );
     }
-
-    // Doesn't compile yet but work in progress
-    // println!("Username: {}", username);
-    // let _ = conn
-    //     .call(|conn| {
-    //         let mut stmt = conn.prepare("SELECT username FROM users").unwrap();
-    //         let users = stmt
-    //             .query_row([], |row| {
-    //                 Ok(User {
-    //                     id: row.get(0)?,
-    //                     username: row.get(1)?,
-    //                     public_key: row.get(2)?,
-    //                     created_at: row.get(3)?
-    //             })
-    //             .unwrap();
-    //         println!("{:?}", users);
-    //     })
-    //     .await;
 
     // Username is valid
     RawJson(

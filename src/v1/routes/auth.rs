@@ -5,12 +5,13 @@ use regex::Regex;
 use rocket::{http::Status, post, response::content::RawJson, State};
 use tokio_rusqlite::Connection;
 
-#[post("/register?<username>&<public_key>")]
+#[post("/register?<username>&<public_key>&<password_hash>")]
 pub async fn register(
     appconfig: &State<Ini>,
     conn: &State<Connection>,
     username: &str,
     public_key: &str,
+    password_hash: &str,
 ) -> RawJson<String> {
     // Default status responses
     let bad = Status::BadRequest;
@@ -58,6 +59,7 @@ pub async fn register(
         );
     }
 
+    // Public key doesn't match regex
     if !public_key_regex.is_match(public_key) {
         return RawJson(
             object! {
@@ -69,11 +71,11 @@ pub async fn register(
         );
     }
 
-    // Username is valid
+    // Username is valid and public key is valid
     RawJson(
         object! {
             "code": ok.code,
-            "message": "Username is valid"
+            "message": "Username is valid and public key is valid"
         }
         .dump(),
     )

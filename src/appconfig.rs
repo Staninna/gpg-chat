@@ -23,7 +23,7 @@ fn default_appconfig() -> Ini {
     appconfig.set(
         "username",
         "regex",
-        Some(String::from("^[a-zA-Z0-9_-]{5,10}$")),
+        Some(String::from(r"^[a-zA-Z0-9_-]{5,10}$")),
     );
     appconfig.set(
         "username", 
@@ -35,6 +35,18 @@ fn default_appconfig() -> Ini {
     // Database section
     appconfig.set("database", "path", Some(String::from("database.db")));
     appconfig.set("database", "file_or_memory", Some(String::from("file")));
+
+    // GPG section
+    appconfig.set(
+        "gpg",
+        "public_regex",
+        Some(String::from(r"^(-----BEGIN PGP PUBLIC KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PUBLIC KEY BLOCK-----)$")),
+    );
+    appconfig.set(
+        "gpg",
+        "private_regex",
+        Some(String::from(r"^(-----BEGIN PGP PRIVATE KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PRIVATE KEY BLOCK-----)$")),
+    );
 
     // Write the ini file
     match appconfig.write(".config/appconfig.ini") {
@@ -70,7 +82,7 @@ fn check_appconfig() -> Ini {
         &mut appconfig,
         "username",
         "regex",
-        "^[a-zA-Z0-9_-]{5,10}$",
+        r"^[a-zA-Z0-9_-]{5,10}$",
         &mut fixed,
     );
     check_fix(
@@ -94,6 +106,22 @@ fn check_appconfig() -> Ini {
         "database",
         "file_or_memory",
         "file",
+        &mut fixed,
+    );
+
+    // Check/fix gpg section
+    check_fix(
+        &mut appconfig,
+        "gpg",
+        "public_regex",
+        r"^(-----BEGIN PGP PUBLIC KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PUBLIC KEY BLOCK-----)$",
+        &mut fixed,
+    );
+    check_fix(
+        &mut appconfig,
+        "gpg",
+        "private_regex",
+        r"^(-----BEGIN PGP PRIVATE KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PRIVATE KEY BLOCK-----)$",
         &mut fixed,
     );
 

@@ -1,6 +1,5 @@
 // Import structures
 pub mod structures {
-    pub mod client;
     pub mod user;
 }
 

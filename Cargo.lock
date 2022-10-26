@@ -467,6 +467,7 @@ dependencies = [
  "regex",
  "rocket",
  "rusqlite",
+ "sha2",
  "tokio-rusqlite",
 ]
 

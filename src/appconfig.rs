@@ -29,7 +29,7 @@ fn default_appconfig() -> Ini {
         "username", 
         "comment", 
         Some(
-            String::from("The username has te be between 5 and 10 characters long and can only contain letters, numbers, underscores and dashes"))
+            String::from("The username has to be between 5 and 10 characters long and can only contain letters, numbers, underscores and dashes"))
     );
 
     // Database section
@@ -89,7 +89,7 @@ fn check_appconfig() -> Ini {
         &mut appconfig,
         "username",
         "comment",
-        "The username has te be between 5 and 10 characters long and can only contain letters, numbers, underscores and dashes",
+        "The username has to be between 5 and 10 characters long and can only contain letters, numbers, underscores and dashes",
         &mut fixed,
     );
 

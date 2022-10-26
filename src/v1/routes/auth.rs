@@ -5,6 +5,8 @@ use regex::Regex;
 use rocket::{http::Status, post, response::content::RawJson, State};
 use tokio_rusqlite::Connection;
 
+// TODO; Change to use data instead of url params
+// https://stackoverflow.com/questions/59964486/how-can-i-respond-to-a-post-request-containing-json-data-with-rocket
 #[post("/register?<username>&<public_key>&<password_hash>")]
 pub async fn register(
     appconfig: &State<Ini>,

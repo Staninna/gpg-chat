@@ -57,6 +57,7 @@ pub async fn setup(conn: &Connection) {
                     id integer NOT NULL,
                     username text NOT NULL UNIQUE,
                     public_key text NOT NULL UNIQUE,
+                    password_hash text NOT NULL,
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     PRIMARY KEY (id)
                   )",

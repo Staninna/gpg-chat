@@ -29,8 +29,7 @@ pub async fn register(
     // Load variables from appconfig
     let username_regex = Regex::new(appconfig.get("username", "regex").unwrap().as_str()).unwrap();
     let regex_comment = appconfig.get("username", "comment").unwrap().to_string();
-    let public_key_regex =
-        Regex::new(appconfig.get("gpg", "public_regex").unwrap().as_str()).unwrap();
+    let gpg_regex = Regex::new(appconfig.get("gpg", "regex").unwrap().as_str()).unwrap();
     let sha256_regex =
         Regex::new(appconfig.get("password", "sha256_regex").unwrap().as_str()).unwrap();
 
@@ -68,13 +67,14 @@ pub async fn register(
         );
     }
 
-    // Public key doesn't match regex
-    if !public_key_regex.is_match(&user.public_key) {
+    // Public key isn't valid
+    if !gpg_regex.is_match(&user.public_key) {
         return RawJson(
             object! {
                 "code": bad.code,
                 "message": "Public key is not a valid GPG public key",
-                "regex": public_key_regex.as_str()
+                "comment": "The public key must be in the format of a GPG public key block if you are sure it is, please open an issue on github and include the public key https://github.com/staninna/gpg-chat/issues/new ",
+                "regex": gpg_regex.as_str(),
             }
             .dump(),
         );

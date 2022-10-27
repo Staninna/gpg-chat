@@ -32,6 +32,9 @@ fn default_appconfig() -> Ini {
             String::from("The username has to be between 5 and 10 characters long and can only contain letters, numbers, underscores and dashes"))
     );
 
+    // Password section
+    appconfig.set("password", "salt", Some(String::from("CHANGE_ME")));
+
     // Database section
     appconfig.set("database", "path", Some(String::from("database.db")));
     appconfig.set("database", "file_or_memory", Some(String::from("file")));
@@ -92,6 +95,9 @@ fn check_appconfig() -> Ini {
         "The username has to be between 5 and 10 characters long and can only contain letters, numbers, underscores and dashes",
         &mut fixed,
     );
+
+    // Check/fix password section
+    check_fix(&mut appconfig, "password", "salt", "CHANGE_ME", &mut fixed);
 
     // Check/fix database section
     check_fix(

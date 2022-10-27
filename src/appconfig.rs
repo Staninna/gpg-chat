@@ -46,15 +46,12 @@ fn default_appconfig() -> Ini {
     // GPG section
     appconfig.set(
         "gpg",
-        "public_regex",
-        Some(r"^(-----BEGIN PGP PUBLIC KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PUBLIC KEY BLOCK-----)$".to_string()),
+        "regex",
+        Some(
+            r"^-----BEGIN PGP PUBLIC KEY BLOCK-----(.*\n)+-----END PGP PUBLIC KEY BLOCK-----$"
+                .to_string(),
+        ),
     );
-    appconfig.set(
-        "gpg",
-        "private_regex",
-        Some(r"^(-----BEGIN PGP PRIVATE KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PRIVATE KEY BLOCK-----)$".to_string()),
-    );
-
     // Write the ini file
     match appconfig.write(".config/appconfig.ini") {
         Ok(_) => println!("Appconfig created"),
@@ -110,6 +107,15 @@ fn check_appconfig() -> Ini {
         &mut fixed,
     );
 
+    // Check/fix gpg section
+    check_fix(
+        &mut appconfig,
+        "gpg",
+        "regex",
+        r"^-----BEGIN PGP PUBLIC KEY BLOCK-----(.*\n)+-----END PGP PUBLIC KEY BLOCK-----$",
+        &mut fixed,
+    );
+
     // Check/fix database section
     check_fix(
         &mut appconfig,
@@ -123,22 +129,6 @@ fn check_appconfig() -> Ini {
         "database",
         "file_or_memory",
         "file",
-        &mut fixed,
-    );
-
-    // Check/fix gpg section
-    check_fix(
-        &mut appconfig,
-        "gpg",
-        "public_regex",
-        r"^(-----BEGIN PGP PUBLIC KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PUBLIC KEY BLOCK-----)$",
-        &mut fixed,
-    );
-    check_fix(
-        &mut appconfig,
-        "gpg",
-        "private_regex",
-        r"^(-----BEGIN PGP PRIVATE KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PRIVATE KEY BLOCK-----)$",
         &mut fixed,
     );
 

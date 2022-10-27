@@ -31,6 +31,8 @@ pub async fn register(
     let regex_comment = appconfig.get("username", "comment").unwrap().to_string();
     let public_key_regex =
         Regex::new(appconfig.get("gpg", "public_regex").unwrap().as_str()).unwrap();
+    let sha256_regex =
+        Regex::new(appconfig.get("password", "sha256_regex").unwrap().as_str()).unwrap();
 
     // Get all usernames from database
     let usernames = conn
@@ -73,6 +75,18 @@ pub async fn register(
                 "code": bad.code,
                 "message": "Public key is not a valid GPG public key",
                 "regex": public_key_regex.as_str()
+            }
+            .dump(),
+        );
+    }
+
+    // Password hash doesn't match regex
+    if !sha256_regex.is_match(&user.password_hash) {
+        return RawJson(
+            object! {
+                "code": bad.code,
+                "message": "Password hash is not a valid SHA256 hash",
+                "regex": sha256_regex.as_str()
             }
             .dump(),
         );

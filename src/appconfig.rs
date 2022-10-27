@@ -33,6 +33,11 @@ fn default_appconfig() -> Ini {
 
     // Password section
     appconfig.set("password", "salt", Some("CHANGE_ME".to_string()));
+    appconfig.set(
+        "password",
+        "sha256_regex",
+        Some(r"^[a-fA-F0-9]{64}$".to_string()),
+    );
 
     // Database section
     appconfig.set("database", "path", Some("database.db".to_string()));
@@ -97,6 +102,13 @@ fn check_appconfig() -> Ini {
 
     // Check/fix password section
     check_fix(&mut appconfig, "password", "salt", "CHANGE_ME", &mut fixed);
+    check_fix(
+        &mut appconfig,
+        "password",
+        "sha256_regex",
+        r"^[a-fA-F0-9]{64}$",
+        &mut fixed,
+    );
 
     // Check/fix database section
     check_fix(

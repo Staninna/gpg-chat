@@ -23,32 +23,31 @@ fn default_appconfig() -> Ini {
     appconfig.set(
         "username",
         "regex",
-        Some(String::from(r"^[a-zA-Z0-9_-]{5,10}$")),
+        Some(r"^[a-zA-Z0-9_-]{5,10}$".to_string()),
     );
     appconfig.set(
         "username", 
         "comment", 
-        Some(
-            String::from("The username has to be between 5 and 10 characters long and can only contain letters, numbers, underscores and dashes"))
+        Some("The username has to be between 5 and 10 characters long and can only contain letters, numbers, underscores and dashes".to_string())
     );
 
     // Password section
-    appconfig.set("password", "salt", Some(String::from("CHANGE_ME")));
+    appconfig.set("password", "salt", Some("CHANGE_ME".to_string()));
 
     // Database section
-    appconfig.set("database", "path", Some(String::from("database.db")));
-    appconfig.set("database", "file_or_memory", Some(String::from("file")));
+    appconfig.set("database", "path", Some("database.db".to_string()));
+    appconfig.set("database", "file_or_memory", Some("file".to_string()));
 
     // GPG section
     appconfig.set(
         "gpg",
         "public_regex",
-        Some(String::from(r"^(-----BEGIN PGP PUBLIC KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PUBLIC KEY BLOCK-----)$")),
+        Some(r"^(-----BEGIN PGP PUBLIC KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PUBLIC KEY BLOCK-----)$".to_string()),
     );
     appconfig.set(
         "gpg",
         "private_regex",
-        Some(String::from(r"^(-----BEGIN PGP PRIVATE KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PRIVATE KEY BLOCK-----)$")),
+        Some(r"^(-----BEGIN PGP PRIVATE KEY BLOCK-----).*([a-zA-Z0-9//\n\/\.\:\+\ \=]+).*(-----END PGP PRIVATE KEY BLOCK-----)$".to_string()),
     );
 
     // Write the ini file
@@ -148,7 +147,7 @@ fn check_appconfig() -> Ini {
 // Helper function for check_appconfig
 fn check_fix(appconfig: &mut Ini, section: &str, key: &str, value: &str, fixed: &mut bool) {
     if appconfig.get(section, key).is_none() {
-        appconfig.set(section, key, Some(String::from(value)));
+        appconfig.set(section, key, Some(value.to_string()));
         if !*fixed {
             *fixed = true;
         }

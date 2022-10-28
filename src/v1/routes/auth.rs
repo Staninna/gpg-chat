@@ -29,9 +29,11 @@ pub async fn register(
     // Load variables from appconfig
     let username_regex = Regex::new(appconfig.get("username", "regex").unwrap().as_str()).unwrap();
     let username_regex_comment = appconfig.get("username", "comment").unwrap().to_string();
-    let gpg_regex = Regex::new(appconfig.get("gpg", "regex").unwrap().as_str()).unwrap();
-    let sha256_regex =
-        Regex::new(appconfig.get("password", "sha256_regex").unwrap().as_str()).unwrap();
+    let sha256_regex = Regex::new("^[a-fA-F0-9]{64}$").unwrap();
+    let gpg_regex = Regex::new(
+        "^-----BEGIN PGP PUBLIC KEY BLOCK-----(.*\n)+-----END PGP PUBLIC KEY BLOCK-----$",
+    )
+    .unwrap();
 
     // Get all usernames from database
     let usernames = conn

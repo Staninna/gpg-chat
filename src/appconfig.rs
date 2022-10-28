@@ -33,25 +33,11 @@ fn default_appconfig() -> Ini {
 
     // Password section
     appconfig.set("password", "salt", Some("CHANGE_ME".to_string()));
-    appconfig.set(
-        "password",
-        "sha256_regex",
-        Some(r"^[a-fA-F0-9]{64}$".to_string()),
-    );
 
     // Database section
     appconfig.set("database", "path", Some("database.db".to_string()));
     appconfig.set("database", "file_or_memory", Some("file".to_string()));
 
-    // GPG section
-    appconfig.set(
-        "gpg",
-        "regex",
-        Some(
-            r"^-----BEGIN PGP PUBLIC KEY BLOCK-----(.*\n)+-----END PGP PUBLIC KEY BLOCK-----$"
-                .to_string(),
-        ),
-    );
     // Write the ini file
     match appconfig.write(".config/appconfig.ini") {
         Ok(_) => println!("Appconfig created"),
@@ -99,22 +85,6 @@ fn check_appconfig() -> Ini {
 
     // Check/fix password section
     check_fix(&mut appconfig, "password", "salt", "CHANGE_ME", &mut fixed);
-    check_fix(
-        &mut appconfig,
-        "password",
-        "sha256_regex",
-        r"^[a-fA-F0-9]{64}$",
-        &mut fixed,
-    );
-
-    // Check/fix gpg section
-    check_fix(
-        &mut appconfig,
-        "gpg",
-        "regex",
-        r"^-----BEGIN PGP PUBLIC KEY BLOCK-----(.*\n)+-----END PGP PUBLIC KEY BLOCK-----$",
-        &mut fixed,
-    );
 
     // Check/fix database section
     check_fix(

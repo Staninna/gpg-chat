@@ -108,6 +108,7 @@ pub async fn register(
         })
         .await;
 
+    // Respond with appropriate message
     match result {
         Ok(_) => {
             return RawJson(

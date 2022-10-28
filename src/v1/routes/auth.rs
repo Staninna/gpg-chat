@@ -28,7 +28,7 @@ pub async fn register(
 
     // Load variables from appconfig
     let username_regex = Regex::new(appconfig.get("username", "regex").unwrap().as_str()).unwrap();
-    let regex_comment = appconfig.get("username", "comment").unwrap().to_string();
+    let username_regex_comment = appconfig.get("username", "comment").unwrap().to_string();
     let gpg_regex = Regex::new(appconfig.get("gpg", "regex").unwrap().as_str()).unwrap();
     let sha256_regex =
         Regex::new(appconfig.get("password", "sha256_regex").unwrap().as_str()).unwrap();
@@ -50,14 +50,15 @@ pub async fn register(
             object! {
                 "code": bad.code,
                 "message": format!("Username doesn't match regex"),
-                "comment": regex_comment,
+                "comment": username_regex_comment,
                 "regex": username_regex.as_str()
             }
             .dump(),
         );
     }
+
     // Username is already taken
-    else if usernames.contains(&user.username) {
+    if usernames.contains(&user.username) {
         return RawJson(
             object! {
                 "code": bad.code,
@@ -95,37 +96,36 @@ pub async fn register(
     // Hash password with salt
     let password_salt = format!("{}{}", user.password_hash, salt);
     let raw_password_hash = Sha512::digest(password_salt.as_bytes());
-    let final_password_hash = format!("{:x}", raw_password_hash);
+    let password_hash = format!("{:x}", raw_password_hash);
 
     // Insert user into database
-    conn.call(move |conn| {
-        match conn.execute(
-            "INSERT INTO users (username, public_key, password_hash) VALUES (?1, ?2, ?3)",
-            params![user.username, user.public_key, final_password_hash],
-        ) {
-            // User was created
-            Ok(_) => {
-                return RawJson(
-                    object! {
-                        "code": ok.code,
-                        "message": "Account created"
-                    }
-                    .dump(),
-                )
-            }
+    let result = conn
+        .call(move |conn| {
+            conn.execute(
+                "INSERT INTO users (username, public_key, password_hash) VALUES (?1, ?2, ?3)",
+                params![user.username, user.public_key, password_hash],
+            )
+        })
+        .await;
 
-            // Count not insert user into database
-            Err(e) => {
-                eprintln!("Couldn't create user, Error: {}", e);
-                return RawJson(
-                    object! {
-                        "code": intern_error.code,
-                        "message": "Couldn't create user"
-                    }
-                    .dump(),
-                );
-            }
+    match result {
+        Ok(_) => {
+            return RawJson(
+                object! {
+                    "code": ok.code,
+                    "message": "User registered"
+                }
+                .dump(),
+            );
         }
-    })
-    .await
+        Err(_) => {
+            return RawJson(
+                object! {
+                    "code": intern_error.code,
+                    "message": "Internal Server Error"
+                }
+                .dump(),
+            );
+        }
+    }
 }

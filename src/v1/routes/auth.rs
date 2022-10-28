@@ -19,7 +19,7 @@ pub async fn register(
     public_key: &str,
     password_hash: &str,
 ) -> RawJson<String> {
-    let user = User::new(username, public_key, password_hash);
+    let new_user = User::new(username, public_key, password_hash);
 
     // Default status responses
     let intern_error = Status::InternalServerError;
@@ -45,7 +45,7 @@ pub async fn register(
         .await;
 
     // Username doesn't match regex
-    if !username_regex.is_match(&user.username) {
+    if !username_regex.is_match(&new_user.username) {
         return RawJson(
             object! {
                 "code": bad.code,
@@ -58,7 +58,7 @@ pub async fn register(
     }
 
     // Username is already taken
-    if usernames.contains(&user.username) {
+    if usernames.contains(&new_user.username) {
         return RawJson(
             object! {
                 "code": bad.code,
@@ -69,7 +69,7 @@ pub async fn register(
     }
 
     // Public key isn't valid
-    if !gpg_regex.is_match(&user.public_key) {
+    if !gpg_regex.is_match(&new_user.public_key) {
         return RawJson(
             object! {
                 "code": bad.code,
@@ -82,7 +82,7 @@ pub async fn register(
     }
 
     // Password hash doesn't match regex
-    if !sha256_regex.is_match(&user.password_hash) {
+    if !sha256_regex.is_match(&new_user.password_hash) {
         return RawJson(
             object! {
                 "code": bad.code,
@@ -94,7 +94,7 @@ pub async fn register(
     }
 
     // Hash password with salt
-    let password_salt = format!("{}{}", user.password_hash, salt);
+    let password_salt = format!("{}{}", new_user.password_hash, salt);
     let raw_password_hash = Sha512::digest(password_salt.as_bytes());
     let password_hash = format!("{:x}", raw_password_hash);
 
@@ -103,7 +103,7 @@ pub async fn register(
         .call(move |conn| {
             conn.execute(
                 "INSERT INTO users (username, public_key, password_hash) VALUES (?1, ?2, ?3)",
-                params![user.username, user.public_key, password_hash],
+                params![new_user.username, new_user.public_key, password_hash],
             )
         })
         .await;

@@ -1,13 +1,9 @@
-// Rules
-#![forbid(unsafe_code)]
-
 // Modules
 mod appconfig;
 mod database;
 mod v1;
 
 // Imports
-use crate::v1::routes::{auth::register, ping::pong};
 use rocket::{
     fs::{relative, FileServer},
     routes,
@@ -18,6 +14,7 @@ use std::{
     path::Path,
     process::exit,
 };
+use v1::routes::{auth::register, ping::pong};
 
 // Main function
 #[rocket::main]

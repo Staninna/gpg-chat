@@ -1,5 +1,5 @@
 [package]
-name = "gpg-chat"
+name = "backend"
 version = "0.1.0"
 edition = "2021"
 
@@ -14,17 +14,3 @@ rand = "0.8.5"
 rusqlite = "0.28"
 tokio-rusqlite = "0.3"
 sha2 = "0.10.6"
-
-[workspace]
-members = [
-    "backend",
-    "frontend",
-]
-
-[[bin]]
-name = "backend"
-path = "backend/src/main.rs"
-
-[[bin]]
-name = "frontend"
-path = "frontend/src/main.rs"

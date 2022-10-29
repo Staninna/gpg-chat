@@ -20,14 +20,11 @@ sha2 = "0.10.6"
 # Frontend
 yew = "0.19"
 
-# Common
-
 
 [workspace]
 members = [
     "backend",
-    "frontend",
-    "common",
+    "frontend"
 ]
 
 [[bin]]
@@ -37,7 +34,3 @@ path = "backend/src/main.rs"
 [[bin]]
 name = "frontend"
 path = "frontend/src/main.rs"
-
-[lib]
-name = "common"
-path = "common/src/lib.rs"

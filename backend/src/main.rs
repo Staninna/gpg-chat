@@ -21,7 +21,7 @@ async fn main() -> Result<(), rocket::Error> {
 
     // Check if salt is valid
     if appconfig.get("password", "salt").unwrap().to_string().len() < 10 {
-        eprintln!("Please change the salt in appconfig.ini to a 10+ character long string");
+        println!("Salt is too short! Please change it in appconfig.ini");
 
         // Exit the program if salt is not stored in salt file
         if !Path::new(&appconfig.get("password", "salt_path").unwrap()).exists() {

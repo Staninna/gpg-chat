@@ -33,6 +33,11 @@ fn default_appconfig() -> Ini {
 
     // Password section
     appconfig.set("password", "salt", Some("CHANGE_ME".to_string()));
+    appconfig.set(
+        "password",
+        "salt_path",
+        Some(".config/SALT_DO_NOT_DELETE".to_string()),
+    );
 
     // Database section
     appconfig.set("database", "path", Some("database.db".to_string()));
@@ -85,6 +90,13 @@ fn check_appconfig() -> Ini {
 
     // Check/fix password section
     check_fix(&mut appconfig, "password", "salt", "CHANGE_ME", &mut fixed);
+    check_fix(
+        &mut appconfig,
+        "password",
+        "salt_path",
+        ".config/SALT_DO_NOT_DELETE",
+        &mut fixed,
+    );
 
     // Check/fix database section
     check_fix(

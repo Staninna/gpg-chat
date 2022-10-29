@@ -4,10 +4,7 @@ mod database;
 mod v1;
 
 // Imports
-use rocket::{
-    fs::{relative, FileServer},
-    routes,
-};
+use rocket::routes;
 use std::{
     fs::File,
     io::{Read, Write},
@@ -27,13 +24,13 @@ async fn main() -> Result<(), rocket::Error> {
         eprintln!("Please change the salt in appconfig.ini to a 10+ character long string");
 
         // Exit the program if salt is not stored in salt file
-        if !Path::new(".config/SALT_DO_NOT_DELETE").exists() {
+        if !Path::new(&appconfig.get("password", "salt_path").unwrap()).exists() {
             exit(1);
         }
     }
     // Write SALT as bytes to file
-    if !Path::new(".config/SALT_DO_NOT_DELETE").exists() {
-        let mut salt_file = File::create(".config/SALT_DO_NOT_DELETE").unwrap();
+    if !Path::new(&appconfig.get("password", "salt_path").unwrap()).exists() {
+        let mut salt_file = File::create(appconfig.get("password", "salt_path").unwrap()).unwrap();
         salt_file
             .write_all(
                 appconfig
@@ -46,7 +43,7 @@ async fn main() -> Result<(), rocket::Error> {
     }
 
     // read salt to string and store it in var salt
-    let mut salt_file = File::open(".config/SALT_DO_NOT_DELETE").unwrap();
+    let mut salt_file = File::open(appconfig.get("password", "salt_path").unwrap()).unwrap();
     let mut salt = String::new();
     salt_file.read_to_string(&mut salt).unwrap();
 
@@ -56,7 +53,6 @@ async fn main() -> Result<(), rocket::Error> {
 
     // Start rocket
     let _rocket = rocket::build()
-        .mount("/", FileServer::from(relative!("ui/")))
         .mount("/api/v1", routes![pong, register])
         .manage(appconfig)
         .manage(salt)

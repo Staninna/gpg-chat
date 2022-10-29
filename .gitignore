@@ -1,9 +1,8 @@
 # Directories
 /target
-/frontend/dist
+**/dist
 /.vscode
 /.config
-/dist
 
 # Files
 /flow.png

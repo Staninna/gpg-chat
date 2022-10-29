@@ -18,6 +18,7 @@ tokio-rusqlite = "0.3"
 sha2 = "0.10.6"
 
 # Frontend
+yew = "0.19"
 
 # Common
 

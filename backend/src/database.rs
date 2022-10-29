@@ -50,7 +50,7 @@ pub async fn connect(appconfig: &Ini) -> Connection {
 pub async fn setup(conn: &Connection) {
     // Create table users if not exists
     conn.call(|conn| {
-        match conn.execute(
+        let result = conn.execute(
             "CREATE TABLE IF NOT EXISTS users (
                     id integer NOT NULL,
                     username text NOT NULL UNIQUE,
@@ -60,9 +60,10 @@ pub async fn setup(conn: &Connection) {
                     PRIMARY KEY (id)
                   )",
             [],
-        )
+        );
+
         // Return error or nothing
-        {
+        match result {
             Ok(_) => {}
             Err(e) => {
                 eprintln!("Couldn't create table users, Error: {}", e);
@@ -71,7 +72,7 @@ pub async fn setup(conn: &Connection) {
         }
 
         // Create table messages if not exists
-        match conn.execute(
+        let result = conn.execute(
             "CREATE TABLE IF NOT EXISTS messages (
                     id integer AUTO_INCREMENT,
                     sender_id integer NOT NULL,
@@ -83,9 +84,10 @@ pub async fn setup(conn: &Connection) {
                     PRIMARY KEY (id)
                   )",
             [],
-        )
+        );
+
         // Return error or nothing
-        {
+        match result {
             Ok(_) => {}
             Err(e) => {
                 eprintln!("Couldn't create table messages, Error: {}", e);

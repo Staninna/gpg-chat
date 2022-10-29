@@ -3,6 +3,7 @@
 /frontend/dist
 /.vscode
 /.config
+/dist
 
 # Files
 /flow.png

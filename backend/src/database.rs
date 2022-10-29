@@ -7,16 +7,14 @@ use tokio_rusqlite::Connection;
 pub async fn connect(appconfig: &Ini) -> Connection {
     // get database type
     let file_or_memory = match appconfig.get("database", "file_or_memory") {
-        Some(file_or_memory) => {
-            if file_or_memory == "file" {
-                true
-            } else if file_or_memory == "memory" {
-                false
-            } else {
+        Some(file_or_memory) => match file_or_memory.to_string().as_str() {
+            "file" => true,
+            "memory" => false,
+            _ => {
                 eprintln!("database.file_or_memory has to be either \"file\" or \"memory\"");
                 exit(1);
             }
-        }
+        },
         None => {
             eprintln!("Couldn't read database.file_or_memory from appconfig.ini");
             exit(1);

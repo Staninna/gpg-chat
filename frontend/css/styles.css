@@ -1,0 +1,41 @@
+body {
+    background-color: black;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+p {
+    color: cornsilk;
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+button {
+    background-color: cornsilk;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    font-size: 20px;
+}
+
+button:hover {
+    background-color: black;
+    color: cornsilk;
+}
+
+p {
+    font-size: 26px;
+}
+
+.inline {
+    position: absolute;
+}

@@ -9,16 +9,21 @@ edition = "2021"
 
 # Backend
 rocket = { version = "0.5.0-rc.2" }
-json = "0.12.4"
-configparser = "3.0.2"
-regex = "1.6.0"
-rand = "0.8.5"
 rusqlite = "0.28"
 tokio-rusqlite = "0.3"
-sha2 = "0.10.6"
 
 # Frontend
 yew = "0.19"
+gloo-net = "0.2"
+serde = { version = "1.0", features = ["derive"] }
+wasm-bindgen-futures = "0.4"
+
+# Shared
+sha2 = "0.10.6"
+regex = "1.6.0"
+json = "0.12.4"
+configparser = "3.0.2"
+
 
 
 [workspace]
